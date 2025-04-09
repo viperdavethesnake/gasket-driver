@@ -1,0 +1,2 @@
+SUBSYSTEM=="apex", KERNEL=="apex_0", MODE="0666", GROUP="apex", TAG+="uaccess"
+SUBSYSTEM=="apex", KERNEL=="apex_1", MODE="0666", GROUP="apex", TAG+="uaccess"
