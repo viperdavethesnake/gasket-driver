@@ -54,7 +54,7 @@
 #include <linux/vmalloc.h>
 
 #if __has_include(<linux/dma-buf.h>)
-MODULE_IMPORT_NS(DMA_BUF);
+MODULE_IMPORT_NS("DMA_BUF");
 #endif
 
 #include "gasket_constants.h"
