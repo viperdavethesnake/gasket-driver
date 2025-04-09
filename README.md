@@ -11,7 +11,7 @@ This section details the changes made in this fork compared to the original Goog
 
 The original driver code failed to compile on newer Linux distributions, specifically tested on:
 
-* **OS:** Ubuntu 25.04 (Noble Numbat)
+* **OS:** Ubuntu 25.04 (Plucky Puffin)
 * **Kernel:** 6.14.0-13-generic
 
 The build process would fail with specific errors related to deprecated kernel APIs and macro usage.
