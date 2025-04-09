@@ -98,12 +98,6 @@ This method uses DKMS (Dynamic Kernel Module Support) to automatically rebuild a
 
 ---
 
-## Original Usage / Requirements / Etc.
-
-[ **TODO:** Manually copy/paste any other relevant sections from the original Google README here (e.g., original Requirements, Usage examples, etc.) if desired. Ensure they are still applicable or add notes where they might differ due to kernel changes. ]
-
----
-
 ## License
 
 This software is licensed under the terms described in the `LICENSE` file. The original license from Google applies to all code in this repository, including modifications made in this fork.
