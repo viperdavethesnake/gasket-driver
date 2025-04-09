@@ -36,11 +36,24 @@ With these patches applied, the driver successfully compiles using `make` in the
 
 ---
 
-## Overview
+## Original README.md
 
-[ **TODO:** Manually copy/paste the original Introduction/Overview section from Google's README here if desired. ]
+ Coral Gasket Driver
 
-*This section would typically describe what the Gasket and Apex drivers are used for in the Coral ecosystem.*
+The Coral Gasket Driver allows usage of the [Coral EdgeTPU](https://coral.ai/) on Linux systems. The driver contains two modules:
+
+* Gasket: Gasket (Google ASIC Software, Kernel Extensions, and Tools) is a top level driver for lightweight communication with Google ASICs.
+* Apex: Apex refers to the [EdgeTPU v1](https://coral.ai/technology)
+
+This repo contains both the source for direct integration into a kernel tree as well as the necessary files to generate a Debian DKMS package.
+
+## Building Debian DKMS pacakge
+
+From the top level directory, execute:
+
+```
+debuild -us -uc -tc -b
+```
 
 ---
 
