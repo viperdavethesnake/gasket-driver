@@ -98,6 +98,49 @@ This method uses DKMS (Dynamic Kernel Module Support) to automatically rebuild a
 
 ---
 
+## Optional: Persistent Device Permissions (udev)
+
+By default, the `/dev/apex_N` device nodes might be created with permissions that only allow root access. To allow non-root users (belonging to a specific group) to access the Coral TPU device directly (e.g., for running TensorFlow Lite applications), you can create a `udev` rule. This method ensures the correct permissions are set automatically every time the device is detected (e.g., on boot or module load), which is more robust than manually changing permissions after each boot.
+
+1.  **Create a dedicated group:** Create a group that will own the device node. A common name is `apex`.
+    ```bash
+    sudo addgroup apex
+    ```
+
+2.  **Add your user to the group:** Replace `your_username` with your actual Linux username. Add any other users who need access.
+    ```bash
+    sudo usermod -aG apex your_username
+    ```
+    **Important:** You will need to **log out and log back in** for this group membership change to take full effect for your user session.
+
+3.  **Create the udev rule file:** Create a file in `/etc/udev/rules.d/`. The filename conventionally starts with a number (for ordering) and ends with `.rules`. Using `80-coral-tpu.rules` is a good choice.
+    ```bash
+    # You can use any text editor, or use nano, etc:
+    sudo vi /etc/udev/rules.d/80-coral-tpu.rules
+    ```
+    Paste the following content into the file using `vi` (e.g., press `i` to insert text, paste the content, press `Esc` to exit insert mode). This rule identifies the apex devices (`SUBSYSTEM=="apex"`, `KERNEL=="apex_N"`) when they appear and sets their mode (permissions) and group ownership.
+    * `MODE="0660"` grants read/write access to the owner (root) and members of the `apex` group.
+    * `GROUP="apex"` sets the group ownership.
+    * `TAG+="uaccess"` helps integrate with systemd-logind for access control based on active user sessions (recommended).
+
+    The example below includes lines for both `apex_0` and `apex_1`. This is necessary for devices like the **Coral Dual Edge TPU** which present two separate TPU interfaces. **If you only have a single Edge TPU** device (M.2/PCIe card with one TPU), **you only need the first line** that references `KERNEL=="apex_0"`.
+
+    ```udev
+    SUBSYSTEM=="apex", KERNEL=="apex_0", MODE="0660", GROUP="apex", TAG+="uaccess"
+    SUBSYSTEM=="apex", KERNEL=="apex_1", MODE="0660", GROUP="apex", TAG+="uaccess"
+    ```
+    Save and close the file (e.g., press `Esc` then type `:wq` and press `Enter` in vi).
+
+4.  **Apply the new rule:** Tell the `udev` system to reload its rule definitions and then re-trigger events to apply rules to any existing devices.
+    ```bash
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+    ```
+
+Now, when the `apex` module loads (or after the trigger command if already loaded), the relevant `/dev/apex_N` device node(s) should be created with read/write permissions for the `apex` group. Users in that group (after logging back in) should be able to access the device directly without needing `sudo`. You can verify by checking `ls -l /dev/apex*`.
+
+---
+
 ## License
 
 This software is licensed under the terms described in the `LICENSE` file. The original license from Google applies to all code in this repository, including modifications made in this fork.
